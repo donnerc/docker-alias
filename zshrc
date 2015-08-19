@@ -38,8 +38,16 @@ alias drmf='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
 # Remove all images
 dri() { docker rmi $(docker images -q); }
 
-# Dockerfile build, e.g., $dbu tcnksm/test 
-dbu() { docker build -t=$1 .; }
+# Dockerfile build, e.g., $dbu tcnksm/test
+dbuild() { docker build -t=$1 .; }
 
 # Show all alias related docker
 dalias() { alias | grep 'docker' | sed "s/^\([^=]*\)=\(.*\)/\1 => \2/"| sed "s/['|\']//g" | sort; }
+
+# rm all containers which match a grep query
+drmgrep() { docker ps -a | grep $1 | awk '{print $1}' | xargs docker rm; }
+
+# rm all images which match a grep query
+drmigrep() { docker images | grep $1 | awk '{print $3}' | xargs docker rmi; }
+
+alias update-docker-aliases='curl -fsSL https://raw.github.com/donnerc/docker-alias/master/zshrc >> ~/.bashrc && source ~/.bashrc'
